@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -5,98 +6,57 @@ const app = express();
 
 app.use(express.json());
 
-const fakeData = [
-    { id: 1, title: "book1", author: "author1", genre: "genre1" },
-    { id: 2, title: "book2", author: "author2", genre: "genre2" },
-    { id: 3, title: "book3", author: "author3", genre: "genre3" },
-]
+console.log("HELLO_WORLD: ", process.env.HELLO_WORLD);
 
+const connection = async () => {
+  await mongoose.connect(
+    process.env.MONGO_URI
+  );
+  console.log("DB is working")
+};
 
-app.get("/books", (request, response) => {
-    // console.log(request.path, " :", typeof request.path);
-    // console.log(response);
-    response.send("Hello from /books");
-});
+connection();
 
-app.get("/books/getAllBooks", (request, response) => {
-    // console.log(request.path);
+// Book model=======================
 
-    const successResponse = {
-        message: "success",
-        books: fakeData,
+  const bookSchema = new mongoose.Schema({
+    title: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    author: {
+      type: String,
+      required: true,
+    },
+    genre: {
+      type: String,
+
     }
+  });
 
-    response.send(successResponse);
-});
+  const Book = mongoose.model("Book", bookSchema);
 
-app.post("/books/addBook", (request, response) => {
-    // console.log(request.body);
-    fakeData.push(request.body);
+// Book model ends==================
 
-    const successResponse = {
-        message: "success",
-        bookes: fakeData,
-    }
+app.get("/books/getAllBooks", (request, response) => {});
 
-    response.send(successResponse);
-})
-
-
-
-
-app.put("/books", (request, response) => {
-  // in here, find a book by title (i.e. an element of fakeArr where the element title is the same as request.body.title)
-  // change (update) the author to an new name
-  console.log(request.body);
-  function findBook(x) {
-    return x.title === request.body.title;
-  }
-
-  const index = fakeData.findIndex(findBook);
-
-  if (index === -1) {
-    const failureResponse = {
-      message: `${request.body.title} not found`,
-    };
-    response.send(failureResponse);
-    return;
-  }
-
-  fakeData[index].title = request.body.newTitle;
+app.post("/books/addBook", async (request, response) => {
+  const book = await Book.create({
+    title: request.body.title,
+    author: request.body.author,
+    genre: request.body.genre,
+  });
 
   const successResponse = {
     message: "success",
-    books: fakeData[index],
+    book: book,
   };
 
   response.send(successResponse);
 });
 
-
-
-app.delete("/books", (request, response) => {
-  // in here, find a book by title (i.e. an element of fakeArr where the element title is the same as request.body.title)
-  // remove (delete) the element from the array
-
-  const index = fakeData.findIndex((book) => book.title === request.body.title);
-
-  if (index === -1) {
-    const failureResponse = {
-      message: `${resuest.body.title} not found`,
-    };
-    response.send(failureResponse);
-    return;
-  }
-
-  fakeData.splice(index, 1);
-
-  const successResponse = {
-    message: "success",
-    books: fakeData,
-  };
-
-  response.send(successResponse);
-});
+app.put("/books", (request, response) => {});
 
 app.listen(5001, () => {
   console.log(`Server is listening of port 5001`);
