@@ -42,36 +42,61 @@ app.post("/books/addBook", (request, response) => {
 
 
 
+
 app.put("/books", (request, response) => {
-    const title = request.body.title;
-    const newTitle = request.body.newTitle;
+  // in here, find a book by title (i.e. an element of fakeArr where the element title is the same as request.body.title)
+  // change (update) the author to an new name
+  console.log(request.body);
+  function findBook(x) {
+    return x.title === request.body.title;
+  }
 
-    const index = fakeData.findIndex((book) => book.title === title);
+  const index = fakeData.findIndex(findBook);
 
-   if (index !== -1) {
-     if (newTitle) {
-       fakeData[index].title = newTitle;
-     }
-     response.status(200).send("Book updated");
-   } else {
-     response.status(404).send("Book not found");
-   }
+  if (index === -1) {
+    const failureResponse = {
+      message: `${request.body.title} not found`,
+    };
+    response.send(failureResponse);
+    return;
+  }
 
-})
+  fakeData[index].title = request.body.newTitle;
+
+  const successResponse = {
+    message: "success",
+    books: fakeData[index],
+  };
+
+  response.send(successResponse);
+});
+
+
 
 app.delete("/books", (request, response) => {
-  function findBook(X) {
-    return X.title === request.body.title;
+  // in here, find a book by title (i.e. an element of fakeArr where the element title is the same as request.body.title)
+  // remove (delete) the element from the array
+
+  const index = fakeData.findIndex((book) => book.title === request.body.title);
+
+  if (index === -1) {
+    const failureResponse = {
+      message: `${resuest.body.title} not found`,
+    };
+    response.send(failureResponse);
+    return;
   }
-  const index = books.findIndex(findBook);
 
+  fakeData.splice(index, 1);
 
-    
-  console.log(index);
+  const successResponse = {
+    message: "success",
+    books: fakeData,
+  };
 
-  books.splice(index, 1);
+  response.send(successResponse);
 });
 
 app.listen(5001, () => {
-    console.log(`Server is listen of port 5001`);
+  console.log(`Server is listening of port 5001`);
 });
