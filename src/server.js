@@ -16,21 +16,11 @@ connection();
 
 app.use(bookRouter);
 
-app.put("/books", async (request, response) => {
-  const newAuthor = await Book.findOneAndUpdate({
-    author: request.body.author
-  });
 
-  const successResponse = {
-    message: "success",
-    author: newAuthor,
-  };
-
-  response.send(successResponse)
-})
 
 app.delete("/books", )
 
 app.listen(5001, () => {
   console.log(`Server is listening of port 5001`);
 });
+
