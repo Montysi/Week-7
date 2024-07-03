@@ -49,8 +49,24 @@ const updateAuthor = async (request, response) => {
   response.send(successResponse);
 };
 
+const deleteBook = async (request, response) => {
+  const deleteBook = await Book.findOneAndDelete({
+    title: request.body.title,
+    author: request.body.author,
+    genre: request.body.genre,
+  });
+
+  const successResponse = {
+    message: "successfully deleted",
+    deleteBook: deleteBook,
+  };
+
+  response.send(successResponse);
+};
+
 module.exports = {
     getAllBooks: getAllBooks,
     addBook: addBook,
     updateAuthor: updateAuthor,
+    deleteBook: deleteBook,
 }
