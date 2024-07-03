@@ -16,23 +16,6 @@ connection();
 
 app.use(bookRouter);
 
-
-
-app.delete("/books", async (request, response) =>{
-  const deleteBook = await Book.findOneAndDelete({
-    title: request.body.title,
-    author: request.body.author,
-    genre: request.body.genre,
-  });
-
-  const successResponse = {
-    message: "successfully deleted",
-    deleteBook: deleteBook,
-  };
-
-  response.send(successResponse);
-})
-
 app.listen(5001, () => {
   console.log(`Server is listening of port 5001`);
 });

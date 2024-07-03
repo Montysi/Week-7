@@ -64,9 +64,36 @@ const deleteBook = async (request, response) => {
   response.send(successResponse);
 };
 
+const updateBookByTitle = async (request, response) => {
+  const { title, updateBook } = request.body;
+
+  if (!title || !updateBook) {
+    return response
+      .status(400)
+      .send("Missing required fields: title and updateBook");
+  }
+
+  try {
+    const updateBookByTitle = await Book.findOneAndUpdate(
+      { title: title },
+      { $set: updateBook },
+      { new: true, useFindAndModify: false }
+    );
+
+    if (updateBookByTitle) {
+      response.status(200).json(updateBookByTitle);
+    } else {
+      response.status(404).send("No book found with that title.");
+    }
+  } catch (err) {
+    response.status(500).send("Error updating book: " + err.message);
+  }
+};
+
 module.exports = {
     getAllBooks: getAllBooks,
     addBook: addBook,
     updateAuthor: updateAuthor,
     deleteBook: deleteBook,
+    updateBookByTitle: updateBookByTitle,
 }
