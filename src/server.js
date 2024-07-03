@@ -6,22 +6,16 @@ const Book = require("./books/model");
 
 const connection = require("./db/connection");
 
+const bookRouter = require("./books/routes");
+
 const app = express();
 
 app.use(express.json());
 
 connection();
 
-app.get("/books/getAllBooks", async (request, response) => {
-  const allBooks = await Book.find({});
-  
-   const successResponse = {
-     message: "success",
-     allBooks: allBooks,
-   };
+app.use(bookRouter);
 
-   response.send(successResponse);
-});
 
 app.post("/books/addBook", async (request, response) => {
   const book = await Book.create({
