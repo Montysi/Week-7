@@ -64,6 +64,8 @@ const deleteBook = async (request, response) => {
   response.send(successResponse);
 };
 
+// Dynamic update stretch goal=====================================
+
 const updateBookByTitle = async (request, response) => {
   const { title, updateBook } = request.body;
 
@@ -77,7 +79,7 @@ const updateBookByTitle = async (request, response) => {
     const updateBookByTitle = await Book.findOneAndUpdate(
       { title: title },
       { $set: updateBook },
-      { new: true, useFindAndModify: false }
+      { new: true },  // needed to return ew values only, without this the code will add to the existing database, rather than update.
     );
 
     if (updateBookByTitle) {
@@ -90,10 +92,26 @@ const updateBookByTitle = async (request, response) => {
   }
 };
 
+// ================================================================
+
+// Delete all stretch goal ========================================
+
+const deleteAll = async (request, response) => {
+  try {
+    const result = await Book.deleteMany({});
+    response.status(200).send(`${result.deletedCount} books were deleted.`);
+  } catch (err) {
+    response.status(500).send("Error deleting books: " + err.message);
+  }
+};
+
+// ================================================================
+
 module.exports = {
     getAllBooks: getAllBooks,
     addBook: addBook,
     updateAuthor: updateAuthor,
     deleteBook: deleteBook,
     updateBookByTitle: updateBookByTitle,
+    deleteAll: deleteAll,
 }
