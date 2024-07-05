@@ -24,7 +24,7 @@ bookRouter.put("/books/updateBookByTitle", updateBookByTitle);
 
 // Delete all stretch goal=========================================
 
-bookRouter.del("/books/deleteAll", deleteAll);
+bookRouter.delete("/books/deleteAll", deleteAll);
 
 // ================================================================
 
